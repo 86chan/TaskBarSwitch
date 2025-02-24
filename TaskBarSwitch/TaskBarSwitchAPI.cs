@@ -67,11 +67,29 @@ public static class TaskBarSwitchAPI
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     struct AppBarData
     {
+        /// <summary>
+        /// 構造体のサイズ
+        /// </summary>
         public UInt32 cbSize;
+        /// <summary>
+        /// ウィンドウハンドル
+        /// </summary>
         public IntPtr hWnd;
+        /// <summary>
+        /// メッセージ
+        /// </summary>
         public UInt32 uCallbackMessage;
+        /// <summary>
+        /// タスクバーの位置
+        /// </summary>
         public UInt32 uEdge;
+        /// <summary>
+        /// タスクバーの矩形
+        /// </summary>
         public Rectangle rc;
+        /// <summary>
+        /// パラメータ
+        /// </summary>
         public Int32 lParam;
     }
 
