@@ -1,0 +1,54 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dotnet",
+			"task": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "build"
+		},
+		{
+			"label": "publish",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"-c:Release",
+				"-p:DebugType=none",
+				"-p:PublishReadyToRun=true",
+				"-p:PublishSingleFile=true",
+				"-p:IncludeAllContentForSelfExtract=true",
+				"-p:Optimize=true",
+				"--self-contained:false"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"type": "msbuild",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": {
+				"kind": "build"
+			},
+			"label": "Clean: solution",
+			"detail": "Clean the TaskBarSwitch.sln solution using dotnet clean"
+		},
+		{
+			"label": "Clean: bin and obj folders",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"rmdir /s /q ${workspaceFolder}\\${workspaceFolderBasename}\\bin && rmdir /s /q ${workspaceFolder}\\${workspaceFolderBasename}\\obj"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+	]
+}
