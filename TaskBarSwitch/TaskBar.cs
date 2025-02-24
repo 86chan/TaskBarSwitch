@@ -60,6 +60,9 @@ namespace TaskBarSwitch
 
             // タスクバーの状態が変更されたときにアイコンを変更する
             TaskBarSwitchAPI.TaskbarStatusChanged += (s, e) => SetTaskbarIcon();
+
+            // 現在の状態を取得してアイコンを設定する
+            SetTaskbarIcon();
         }
 
         /// <summary>
