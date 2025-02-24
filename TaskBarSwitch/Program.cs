@@ -3,37 +3,61 @@ namespace TaskBarSwitch
 {
     internal static class Program
     {
+
+        /// <summary>
+        /// 多重起動防止Mutex
+        /// </summary>
+        private static Mutex? mutex;
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            bool createdNew;
+            mutex = new Mutex(true, nameof(TaskBarSwitch), out createdNew);
 
-            var taskBar = new TaskBar();
-
-            // 引数のチェック
-            if (args.Length > 0)
+            try
             {
-                foreach (var arg in args)
+                // 多重起動防止
+                if (true == createdNew)
                 {
-                    // "show" 引数が渡された場合の処理
-                    if (arg.ToLower().Equals("--show", StringComparison.OrdinalIgnoreCase))
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+
+                    var taskBar = new TaskBar();
+
+                    // 引数のチェック
+                    if (args.Length > 0)
                     {
-                        TaskBarSwitchAPI.SetTaskbarStatus(TaskBarSwitchAPI.ASB_STATUS.ABS_ALWAYSONTOP);
+                        foreach (var arg in args)
+                        {
+                            // "show" 引数が渡された場合の処理
+                            if (arg.ToLower().Equals("--show", StringComparison.OrdinalIgnoreCase))
+                            {
+                                TaskBarSwitchAPI.SetTaskbarStatus(TaskBarSwitchAPI.ASB_STATUS.ABS_ALWAYSONTOP);
+                            }
+
+                            // "hide" 引数が渡された場合の処理
+                            if (arg.ToLower().Equals("--hide", StringComparison.OrdinalIgnoreCase))
+                            {
+                                TaskBarSwitchAPI.SetTaskbarStatus(TaskBarSwitchAPI.ASB_STATUS.ABS_AUTOHIDE);
+                            }
+                        }
                     }
 
-                    // "hide" 引数が渡された場合の処理
-                    if (arg.ToLower().Equals("--hide", StringComparison.OrdinalIgnoreCase))
-                    {
-                        TaskBarSwitchAPI.SetTaskbarStatus(TaskBarSwitchAPI.ASB_STATUS.ABS_AUTOHIDE);
-                    }
+                    Application.Run(taskBar);
                 }
             }
-
-            Application.Run(taskBar);
+            finally
+            {
+                if ((true == createdNew) && (null != mutex))
+                {
+                    // Mutexの解放
+                    mutex.ReleaseMutex();
+                }
+            }
         }
     }
 }
