@@ -6,10 +6,12 @@
 			"task": "build",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "build"
+			"label": "Debug",
+			"detail": "Build the application in debug mode",
 		},
 		{
 			"label": "Release",
+			"detail": "Publish the application in release mode",
 			"group": {
 				"kind": "build",
 				"isDefault": true
@@ -37,10 +39,11 @@
 				"kind": "build"
 			},
 			"label": "Clean: solution",
-			"detail": "Clean the TaskBarSwitch.sln solution using dotnet clean"
+			"detail": "Clean the TaskBarSwitch.sln solution using dotnet clean",
 		},
 		{
 			"label": "Clean: bin and obj folders",
+			"detail": "delete the bin directory and the obj directory.",
 			"type": "shell",
 			"command": "cmd",
 			"args": [
