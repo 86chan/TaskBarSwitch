@@ -53,3 +53,9 @@ Build the project with the following command.
 
 ```sh
 dotnet build
+```
+
+Alternatively, you can build the project from Visual Studio Code tasks. To run the tasks, follow these steps:
+
+1. From the menu, select "Terminal" > "Run Task".
+2. Select "Debug" or "Release".

@@ -53,3 +53,8 @@ TaskBarSwitchは、Windowsのタスクバーの表示/非表示を切り替え�
 ```sh
 dotnet build
 ```
+
+または、Visual Studio Codeのタスクからビルドすることもできます。タスクの実行方法は以下の通りです。
+
+1. メニューから「ターミナル」 > 「タスクの実行」を選択します。
+2. 「Debug」または「Release」を選択します。
