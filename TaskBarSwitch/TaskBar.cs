@@ -20,14 +20,14 @@ namespace TaskBarSwitch
         private ContextMenuStrip contextMenu;
 
         /// <summary>
-        /// 自動非表示アイコン
-        /// </summary>
-        private SKSvg AUTOHIDEIcon;
-
-        /// <summary>
         /// 常時表示アイコン
         /// </summary>
         private SKSvg ALWAYSONTOPIcon;
+
+        /// <summary>
+        /// 自動非表示アイコン
+        /// </summary>
+        private SKSvg AUTOHIDEIcon;
 
         /// <summary>
         /// コンストラクタ
@@ -41,8 +41,8 @@ namespace TaskBarSwitch
             ALWAYSONTOPIcon = ConvertSvgToIconEmbedded("ALWAYSONTOP.svg");
 
             // コンテキストメニューの項目を追加
-            contextMenu.Items.Add("表示", null, TaskBarShow);
-            contextMenu.Items.Add("非表示", null, TaskBarHide);
+            contextMenu.Items.Add("常時表示", null, TaskBarShow);
+            contextMenu.Items.Add("自動非表示", null, TaskBarHide);
             contextMenu.Items.Add("切り替え", null, SwitchShowHide);
             contextMenu.Items.Add("終了", null, ExitApp);
 

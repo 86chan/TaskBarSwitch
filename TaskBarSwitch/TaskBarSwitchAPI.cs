@@ -50,12 +50,12 @@ public static class TaskBarSwitchAPI
     public enum ASB_STATUS
     {
         /// <summary>
-        /// 自動的に隠す
+        /// 自動非表示
         /// </summary>
         ABS_AUTOHIDE = 0x01,
 
         /// <summary>
-        /// 常に表示する
+        /// 常時表示
         /// </summary>
         ABS_ALWAYSONTOP = 0x02,
 
