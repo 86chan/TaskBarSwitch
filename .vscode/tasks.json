@@ -9,7 +9,7 @@
 			"label": "build"
 		},
 		{
-			"label": "publish",
+			"label": "Release",
 			"group": {
 				"kind": "build",
 				"isDefault": true
