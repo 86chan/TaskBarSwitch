@@ -9,6 +9,10 @@ TaskBarSwitchは、Windowsのタスクバーの表示/非表示を切り替え�
 
 ## 機能
 
+<p align="center">
+  <img src="./doc/img/use.gif" alt="use" width="640">
+</p>
+
 - タスクバーの自動非表示と常時表示の切り替え
 - Windowsのアクセントカラーを使用したアイコン表示
 - コンテキストメニューからの操作

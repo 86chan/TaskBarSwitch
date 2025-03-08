@@ -10,6 +10,10 @@ TaskBarSwitch is a tool for toggling the visibility of the Windows taskbar. This
 
 ## Features
 
+<p align="center">
+  <img src="./doc/img/use.gif" alt="use" width="640">
+</p>
+
 - Toggle between auto-hide and always-on-top modes for the taskbar
 - Display icons using Windows accent colors
 - Operate from the context menu
