@@ -43,14 +43,14 @@ namespace TaskBarSwitch
             // コンテキストメニューの項目を追加
             contextMenu.Items.Add("常時表示", null, TaskBarShow);
             contextMenu.Items.Add("自動非表示", null, TaskBarHide);
-            contextMenu.Items.Add("切り替え", null, SwitchShowHide);
+            contextMenu.Items.Add("切り替え", null, AutoSwitch);
             contextMenu.Items.Add("終了", null, ExitApp);
 
             // NotifyIconの設定
             notifyIcon.Icon = ChangeAccentColorIcon(AUTOHIDEIcon);
             notifyIcon.ContextMenuStrip = contextMenu;
             notifyIcon.Visible = true;
-            notifyIcon.DoubleClick += SwitchShowHide;
+            notifyIcon.DoubleClick += AutoSwitch;
             notifyIcon.Text = "TaskBarSwitch";
 
             // フォームを非表示にする
@@ -70,7 +70,7 @@ namespace TaskBarSwitch
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchShowHide(object? sender, EventArgs e)
+        private void AutoSwitch(object? sender, EventArgs e)
         {
             var status = TaskBarSwitchAPI.GetTaskbarStatus();
             switch (status)
