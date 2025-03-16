@@ -6,7 +6,7 @@
 			"task": "build",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "Debug",
+			"label": "build",
 			"detail": "Build the application in debug mode",
 		},
 		{
