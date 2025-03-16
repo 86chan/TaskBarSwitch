@@ -18,6 +18,10 @@ namespace TaskBarSwitch
             bool createdNew;
             mutex = new Mutex(true, nameof(TaskBarSwitch), out createdNew);
 
+#if DEBUG
+            createdNew = true;
+#endif
+
             try
             {
                 // 多重起動防止

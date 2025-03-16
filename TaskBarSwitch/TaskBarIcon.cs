@@ -1,10 +1,7 @@
-using System.Drawing;
-using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Reflection;
 using SkiaSharp;
 using Svg.Skia;
-using System.Runtime;
 
 namespace TaskBarSwitch
 {
@@ -93,7 +90,12 @@ namespace TaskBarSwitch
             var bitmap = new SKBitmap((int)svg.Picture.CullRect.Width, (int)svg.Picture.CullRect.Height);
             using (var canvas = new SKCanvas(bitmap))
             {
+                #if DEBUG
+                canvas.Clear(SKColors.WhiteSmoke); // Debug時は背景色を設定
+                #else
                 canvas.Clear(SKColors.Transparent);
+                #endif
+                
                 var paint = new SKPaint
                 {
                     ColorFilter = SKColorFilter.CreateBlendMode(accentColor, SKBlendMode.SrcIn)
