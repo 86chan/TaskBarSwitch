@@ -1,5 +1,5 @@
-using System.Drawing;
-using System.Windows.Forms;
+using System.Diagnostics;
+using System.Management;
 using Svg.Skia;
 
 namespace TaskBarSwitch
@@ -12,7 +12,7 @@ namespace TaskBarSwitch
         /// <summary>
         /// NotifyIcon
         /// </summary>
-        private NotifyIcon notifyIcon;
+        private static NotifyIcon? notifyIcon;
 
         /// <summary>
         /// コンテキストメニュー
@@ -44,6 +44,7 @@ namespace TaskBarSwitch
             contextMenu.Items.Add("常時表示", null, TaskBarShow);
             contextMenu.Items.Add("自動非表示", null, TaskBarHide);
             contextMenu.Items.Add("切り替え", null, AutoSwitch);
+            contextMenu.Items.Add("タスクバーを再起動", null, RestartTaskbar);
             contextMenu.Items.Add("終了", null, ExitApp);
 
             // NotifyIconの設定
@@ -70,7 +71,7 @@ namespace TaskBarSwitch
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AutoSwitch(object? sender, EventArgs e)
+        private static void AutoSwitch(object? sender, EventArgs e)
         {
             var status = TaskBarSwitchAPI.GetTaskbarStatus();
             switch (status)
@@ -90,7 +91,7 @@ namespace TaskBarSwitch
         /// <summary>
         /// タスクバーを非表示にする
         /// </summary>
-        private void TaskBarHide(object? sender, EventArgs e)
+        private static void TaskBarHide(object? sender, EventArgs e)
         {
             var status = TaskBarSwitchAPI.GetTaskbarStatus();
             if (status != TaskBarSwitchAPI.ASB_STATUS.ABS_AUTOHIDE)
@@ -102,7 +103,7 @@ namespace TaskBarSwitch
         /// <summary>
         /// タスクバーを表示する
         /// </summary>
-        private void TaskBarShow(object? sender, EventArgs e)
+        private static void TaskBarShow(object? sender, EventArgs e)
         {
             var status = TaskBarSwitchAPI.GetTaskbarStatus();
             if (status != TaskBarSwitchAPI.ASB_STATUS.ABS_ALWAYSONTOP)
@@ -112,13 +113,60 @@ namespace TaskBarSwitch
         }
 
         /// <summary>
+        /// タスクバーを再起動する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void RestartTaskbar(object? sender, EventArgs e)
+        {
+            var cmdList = new[]
+            {
+                @"C:\WINDOWS\Explorer.EXE".ToLower(),
+                @"""explorer.exe""".ToLower()
+            };
+
+            Process[] ps = Process.GetProcesses();
+
+            //配列から1つずつ取り出す
+            foreach (Process p in ps)
+            {
+                try
+                {
+                    // explorer.exe 以外はスキップ
+                    if (p.ProcessName != "explorer") continue;
+
+                    // WMI を使用してコマンドライン引数を取得
+                    string query = $"SELECT CommandLine FROM Win32_Process WHERE ProcessId = {p.Id}";
+                    using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
+                    using (ManagementObjectCollection results = searcher.Get())
+                    {
+                        foreach (ManagementObject mo in results)
+                        {
+                            string commandLine = mo["CommandLine"]?.ToString() ?? string.Empty;
+
+                            if (true == cmdList.Contains(commandLine.ToLower()))
+                            {
+                                p.Kill();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Console.WriteLine($"エラー: {ex.Message}");
+                }
+            }
+        }
+
+        /// <summary>
         /// 終了
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ExitApp(object? sender, EventArgs e)
+        private static void ExitApp(object? sender, EventArgs e)
         {
-            notifyIcon.Visible = false;
+            if (notifyIcon != null)
+                notifyIcon.Visible = false;
             Application.Exit();
         }
     }

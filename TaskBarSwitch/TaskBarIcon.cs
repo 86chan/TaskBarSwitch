@@ -15,6 +15,8 @@ namespace TaskBarSwitch
         /// </summary>
         private void SetTaskbarIcon()
         {
+            if (notifyIcon == null) return;
+            
             var status = TaskBarSwitchAPI.GetTaskbarStatus();
             switch (status)
             {
