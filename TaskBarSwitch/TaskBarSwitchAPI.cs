@@ -1,4 +1,4 @@
-using System.Drawing;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace TaskBarSwitch;
@@ -20,7 +20,7 @@ public static class TaskBarSwitchAPI
     /// <param name="lpWindowName"></param>
     /// <returns></returns>
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-    extern static nint FindWindow(
+    private extern static nint FindWindow(
         [MarshalAs(UnmanagedType.LPWStr), In] string lpClassName,
         [MarshalAs(UnmanagedType.LPWStr), In] string? lpWindowName
     );
@@ -32,17 +32,49 @@ public static class TaskBarSwitchAPI
     /// <param name="pData"></param>
     /// <returns></returns>
     [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-    extern static nuint SHAppBarMessage(uint dwMessage, ref AppBarData pData);
+    private extern static nuint SHAppBarMessage(uint dwMessage, ref AppBarData pData);
+
+    /// <summary>
+    /// ウィンドウにメッセージを送信する
+    /// </summary>
+    /// <param name="hWnd"></param>
+    /// <param name="Msg"></param>
+    /// <param name="wParam"></param>
+    /// <param name="lParam"></param>
+    /// <param name="fuFlags"></param>
+    /// <param name="uTimeout"></param>
+    /// <param name="lpdwResult"></param>
+    /// <returns></returns>
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg,
+                                                    IntPtr wParam, IntPtr lParam,
+                                                    uint fuFlags, uint uTimeout,
+                                                    out IntPtr lpdwResult);
 
     /// <summary>
     /// Windows タスクバーの自動表示と常時表示の状態を取得する
     /// </summary>
-    const uint ABM_GETSTATE = 0x00000004;
+    private const uint ABM_GETSTATE = 0x00000004;
 
     /// <summary>
     /// Windows タスクバーの自動表示と常時表示の状態を設定する
     /// </summary>
-    const uint ABM_SETSTATE = 0x0000000a;
+    private const uint ABM_SETSTATE = 0x0000000a;
+
+    /// <summary>
+    /// システム設定が変更されたことを通知する
+    /// </summary>
+    private const uint WM_SETTINGCHANGE = 0x001A;
+
+    /// <summary>
+    /// タイムアウト値
+    /// </summary>
+    private const uint SMTO_ABORTIFHUNG = 0x0002;
+
+    /// <summary>
+    /// ブロードキャストメッセージ
+    /// </summary>
+    private const int HWND_BROADCAST = 0xffff;
 
     /// <summary>
     /// ステータスバーの状態
@@ -65,7 +97,7 @@ public static class TaskBarSwitchAPI
     /// APPBARDATA 構造体
     /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    struct AppBarData
+    public struct AppBarData
     {
         /// <summary>
         /// 構造体のサイズ
@@ -128,5 +160,21 @@ public static class TaskBarSwitchAPI
         TaskbarStatusChanged?.Invoke(null, EventArgs.Empty);
 
         return result;
+    }
+
+    /// <summary>
+    /// タスクバーを再起動する
+    /// </summary>
+    public static void RestartTaskbar()
+    {
+        // try
+        // {
+        //     var p = Process.Start("explorer.exe");
+        //     SendMessageTimeout(p.Handle, WM_SETTINGCHANGE, IntPtr.Zero, IntPtr.Zero, SMTO_ABORTIFHUNG, 1000, out _);
+        // }
+        // catch (Exception ex)
+        // {
+        //     Debug.WriteLine($"Failed to kill the process: {ex.Message}");
+        // }
     }
 }

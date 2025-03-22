@@ -18,14 +18,13 @@ namespace TaskBarSwitch
             bool createdNew;
             mutex = new Mutex(true, nameof(TaskBarSwitch), out createdNew);
 
-#if DEBUG
-            createdNew = true;
-#endif
 
             try
             {
+#if REREASE
                 // 多重起動防止
                 if (true == createdNew)
+#endif
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);

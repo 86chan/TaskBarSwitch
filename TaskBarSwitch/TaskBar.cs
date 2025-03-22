@@ -119,41 +119,42 @@ namespace TaskBarSwitch
         /// <param name="e"></param>
         private static void RestartTaskbar(object? sender, EventArgs e)
         {
-            var cmdList = new[]
+            var procName = new[]
             {
+                @"explorer".ToLower(),
+                @"explorer.exe".ToLower(),
                 @"C:\WINDOWS\Explorer.EXE".ToLower(),
-                @"""explorer.exe""".ToLower()
             };
 
-            Process[] ps = Process.GetProcesses();
+            var ps = Process.GetProcessesByName(procName[0]);
 
             //配列から1つずつ取り出す
-            foreach (Process p in ps)
+            foreach (var p in ps)
             {
                 try
                 {
-                    // explorer.exe 以外はスキップ
-                    if (p.ProcessName != "explorer") continue;
-
                     // WMI を使用してコマンドライン引数を取得
-                    string query = $"SELECT CommandLine FROM Win32_Process WHERE ProcessId = {p.Id}";
-                    using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
-                    using (ManagementObjectCollection results = searcher.Get())
+                    var query = $"SELECT CommandLine FROM Win32_Process WHERE ProcessId = {p.Id}";
+                    using (var searcher = new ManagementObjectSearcher(query))
+                    using (var results = searcher.Get())
                     {
-                        foreach (ManagementObject mo in results)
+                        foreach (var mo in results)
                         {
-                            string commandLine = mo["CommandLine"]?.ToString() ?? string.Empty;
-
-                            if (true == cmdList.Contains(commandLine.ToLower()))
+                            var commandLine = mo["CommandLine"]?.ToString() ?? string.Empty;
+                            if (true == procName.Contains(commandLine.ToLower().Trim().Trim('"')))
                             {
+                                // タスクバーを再起動
                                 p.Kill();
+                                p.WaitForExit();
+
+                                TaskBarSwitchAPI.RestartTaskbar();
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Console.WriteLine($"エラー: {ex.Message}");
+                    Console.WriteLine($"エラー: {ex.Message}");
                 }
             }
         }
