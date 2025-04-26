@@ -169,7 +169,7 @@ public static class TaskBarSwitchAPI
     {
         try
         {
-            var p = Process.Start("explorer.exe");
+            var p = Process.Start(TaskBar.ExplorerProcName[0]);
             SendMessageTimeout(p.Handle, WM_SETTINGCHANGE, IntPtr.Zero, IntPtr.Zero, SMTO_ABORTIFHUNG, 1000, out _);
             p.Kill();
             p.WaitForExit();

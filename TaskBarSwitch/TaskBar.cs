@@ -30,6 +30,16 @@ namespace TaskBarSwitch
         private SKSvg AUTOHIDEIcon;
 
         /// <summary>
+        /// Explorerのプロセス名
+        /// </summary>
+        public static readonly string[] ExplorerProcName =
+        {
+            @"explorer",
+            @"explorer.exe",
+            @"c:\windows\explorer.exe",
+        };
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         public TaskBar()
@@ -64,6 +74,9 @@ namespace TaskBarSwitch
 
             // 現在の状態を取得してアイコンを設定する
             SetTaskbarIcon();
+
+            // プロセス生成イベントの監視を開始
+            StartMonitoring();
         }
 
         /// <summary>
@@ -119,14 +132,7 @@ namespace TaskBarSwitch
         /// <param name="e"></param>
         private static void RestartTaskbar(object? sender, EventArgs e)
         {
-            var procName = new[]
-            {
-                @"explorer".ToLower(),
-                @"explorer.exe".ToLower(),
-                @"C:\WINDOWS\Explorer.EXE".ToLower(),
-            };
-
-            var ps = Process.GetProcessesByName(procName[0]);
+            var ps = Process.GetProcessesByName(ExplorerProcName[0]);
 
             //配列から1つずつ取り出す
             foreach (var p in ps)
@@ -140,7 +146,7 @@ namespace TaskBarSwitch
                     foreach (var mo in results)
                     {
                         var commandLine = mo["CommandLine"]?.ToString() ?? string.Empty;
-                        if (true == procName.Contains(commandLine.ToLower().Trim().Trim('"')))
+                        if (true == ExplorerProcName.Contains(commandLine.ToLower().Trim().Trim('"')))
                         {
                             // タスクバーを再起動
                             p.Kill();
