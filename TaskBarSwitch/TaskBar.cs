@@ -135,20 +135,18 @@ namespace TaskBarSwitch
                 {
                     // WMI を使用してコマンドライン引数を取得
                     var query = $"SELECT CommandLine FROM Win32_Process WHERE ProcessId = {p.Id}";
-                    using (var searcher = new ManagementObjectSearcher(query))
-                    using (var results = searcher.Get())
+                    using var searcher = new ManagementObjectSearcher(query);
+                    using var results = searcher.Get();
+                    foreach (var mo in results)
                     {
-                        foreach (var mo in results)
+                        var commandLine = mo["CommandLine"]?.ToString() ?? string.Empty;
+                        if (true == procName.Contains(commandLine.ToLower().Trim().Trim('"')))
                         {
-                            var commandLine = mo["CommandLine"]?.ToString() ?? string.Empty;
-                            if (true == procName.Contains(commandLine.ToLower().Trim().Trim('"')))
-                            {
-                                // タスクバーを再起動
-                                p.Kill();
-                                p.WaitForExit();
+                            // タスクバーを再起動
+                            p.Kill();
+                            p.WaitForExit();
 
-                                TaskBarSwitchAPI.RestartTaskbar();
-                            }
+                            TaskBarSwitchAPI.RestartTaskbar();
                         }
                     }
                 }

@@ -167,14 +167,16 @@ public static class TaskBarSwitchAPI
     /// </summary>
     public static void RestartTaskbar()
     {
-        // try
-        // {
-        //     var p = Process.Start("explorer.exe");
-        //     SendMessageTimeout(p.Handle, WM_SETTINGCHANGE, IntPtr.Zero, IntPtr.Zero, SMTO_ABORTIFHUNG, 1000, out _);
-        // }
-        // catch (Exception ex)
-        // {
-        //     Debug.WriteLine($"Failed to kill the process: {ex.Message}");
-        // }
+        try
+        {
+            var p = Process.Start("explorer.exe");
+            SendMessageTimeout(p.Handle, WM_SETTINGCHANGE, IntPtr.Zero, IntPtr.Zero, SMTO_ABORTIFHUNG, 1000, out _);
+            p.Kill();
+            p.WaitForExit();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to kill the process: {ex.Message}");
+        }
     }
 }
